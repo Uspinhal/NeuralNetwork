@@ -14,6 +14,8 @@ public class Matrix {
     public Matrix(int numberOfRows, int numberOfColumns) {
         this.numberOfColumns = numberOfColumns;
         this.numberOfRows = numberOfRows;
+        content = new double[numberOfRows][numberOfColumns];
+
     }
     public Matrix(double[][] matrix) {
         this.numberOfRows = matrix.length;
@@ -115,7 +117,7 @@ public class Matrix {
         return result;
     }
     public Matrix transpose() {
-        Matrix result = new Matrix(this.numberOfColumns, this.numberOfColumns);
+        Matrix result = new Matrix(this.numberOfColumns, this.numberOfRows);
         for (int i = 0; i < this.numberOfRows; i++) {
             for (int j = 0; j < this.numberOfColumns; j++) {
                 result.setValue(j, i, getValue(i,j));
@@ -133,8 +135,8 @@ public class Matrix {
         return result;
     }
     public Matrix multiply(Matrix a){
-        Matrix result = new Matrix(this.getNumberOfRows(),a.getNumberOfColumns());
-        if(this.getNumberOfColumns()!=a.getNumberOfRows()){
+        Matrix result = new Matrix(getNumberOfRows(),a.getNumberOfColumns());
+        if(getNumberOfColumns()!=a.getNumberOfRows()){
             throw new IllegalArgumentException("Number of Columns of first Matrix must match the number of Rows of second Matrix");
         }
         for(int i=0;i<this.getNumberOfRows();i++){
@@ -352,8 +354,8 @@ public class Matrix {
         if(j>=numberOfColumns)
             throw new IllegalArgumentException("Number of Column outside the matrix`s limits");
 
-        this.content[i][j]=value;
-        this.determinant = null;
+        content[i][j]=value;
+        determinant = null;
     }
     public void setZeros(){
         for(int i=0;i<getNumberOfRows();i++){

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import neuralnet.learn.Adaline;
 import neuralnet.learn.Perceptron;
+import neuralnet.learn.Backpropagation;
+import neuralnet.learn.LevenbergMarquardt;
 import neuralnet.learn.Training.ActivationFncENUM;
 import neuralnet.learn.Training.TrainingTypesENUM;
 
@@ -15,14 +17,18 @@ public class NeuralNet {
 	private int numberOfHiddenLayers;
 
 	// Chapter2
-	private double[][] trainSet;
-	private double[]   realOutputSet;
-	private int        maxEpochs;
-	private double     learningRate;
-	private double     targetError;
-	private double     trainingError;
+	private double[][]	trainSet;
+	private double[]	realOutputSet;
+	private double[][]	realMatrixOutputSet;
+	private int			maxEpochs;
+	private double		learningRate;
+	private double		targetError;
+	private double		trainingError;
+	private double		errorMean;
+
 	private ArrayList<Double> listOfMSE = new ArrayList<>();
 	private ActivationFncENUM activationFnc;
+	private ActivationFncENUM activationFncOutputLayer;
 	private TrainingTypesENUM trainType;
 
 	public NeuralNet initNet(int numberOfInputNeurons,
@@ -86,7 +92,15 @@ public class NeuralNet {
 			case ADALINE:
 				Adaline a = new Adaline();
 				trainedNet = a.train(n);
-				return trainedNet;		
+				return trainedNet;
+			case BACKPROPAGATION:
+				Backpropagation b = new Backpropagation();
+				trainedNet = b.train(n);
+				return trainedNet;
+			case LEVENBERG_MARQUARDT:
+				LevenbergMarquardt mq = new LevenbergMarquardt();
+				trainedNet = mq.train(n);
+				return trainedNet;
 			default:
 				throw new IllegalArgumentException(n.trainType + " does not exist in TrainingTypesENUM");
 		}
@@ -101,6 +115,10 @@ public class NeuralNet {
 		case ADALINE:
 			Adaline a = new Adaline();
 			a.printTrainedNetResult( n );
+			break;
+		case BACKPROPAGATION:
+			Backpropagation b = new Backpropagation();
+			b.printTrainedNetResult(n);
 			break;
 		default:
 			throw new IllegalArgumentException(n.trainType+" does not exist in TrainingTypesENUM");
@@ -124,7 +142,7 @@ public class NeuralNet {
 	}
 
 	public ArrayList<HiddenLayer> getListOfHiddenLayer() {
-		return this.listOfHiddenLayer;
+		return listOfHiddenLayer;
 	}
 
 	public void setListOfHiddenLayer(ArrayList<HiddenLayer> listOfHiddenLayer) {
@@ -132,7 +150,7 @@ public class NeuralNet {
 	}
 
 	public OutputLayer getOutputLayer() {
-		return this.outputLayer;
+		return outputLayer;
 	}
 
 	public void setOutputLayer(OutputLayer outputLayer) {
@@ -217,6 +235,27 @@ public class NeuralNet {
 
 	public void setTrainType(TrainingTypesENUM trainType) {
 		this.trainType = trainType;
+	}
+
+	public double[][] getRealMatrixOutputSet(){
+		return this.realMatrixOutputSet;
+	}
+	public void setRealMatrixOutputSet(double[][] realMatrixOutputSet) {
+		this.realMatrixOutputSet = realMatrixOutputSet;
+	}
+	public double getErrorMean() {
+		return this.errorMean;
+	}
+
+	public void setErrorMean(double errorMean) {
+		this.errorMean = errorMean;
+	}
+	public ActivationFncENUM getActivationFncOutputLayer() {
+		return this.activationFncOutputLayer;
+	}
+
+	public void setActivationFncOutputLayer(ActivationFncENUM activationFncOutputLayer) {
+		this.activationFncOutputLayer = activationFncOutputLayer;
 	}
 	
 

@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public abstract class Layer {
 
     private ArrayList<Neuron> listOfNeurons;
-    protected Integer numberOfNeuronsInLayer;
+    protected int numberOfNeuronsInLayer;
 
     public void printLayer(){
 
@@ -19,7 +19,7 @@ public abstract class Layer {
         this.listOfNeurons = listOfNeurons;
     }
 
-    public Integer getNumberOfNeuronsInLayer() {
+    public int getNumberOfNeuronsInLayer() {
         return numberOfNeuronsInLayer;
     }
 

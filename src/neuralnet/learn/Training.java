@@ -13,7 +13,7 @@ public abstract class Training {
 	private double mse;
 
 	public enum TrainingTypesENUM {
-		PERCEPTRON, ADALINE;
+		PERCEPTRON, ADALINE, BACKPROPAGATION, LEVENBERG_MARQUARDT;
 	}
 
 	public NeuralNet train(NeuralNet n) {
@@ -113,7 +113,7 @@ public abstract class Training {
 		STEP, LINEAR, SIGLOG, HYPERTAN;
 	}
 
-	private double activationFnc(ActivationFncENUM fnc, double value) {
+	protected double activationFnc(ActivationFncENUM fnc, double value) {
 		switch (fnc) {
 		case STEP:
 			return fncStep(value);
@@ -180,22 +180,25 @@ public abstract class Training {
 		for (int i = 0; i < rows; i++) {
 			double netValue = 0.0;
 			for (int j = 0; j < cols; j++) {
-				inputWeightIn = trainedNet.getInputLayer().getListOfNeurons()
-						.get(j).getListOfWeightIn();
+				inputWeightIn = trainedNet.getInputLayer().getListOfNeurons().get(j).getListOfWeightIn();
 				double inputWeight = inputWeightIn.get(0);
-				netValue = netValue + inputWeight
-						* trainedNet.getTrainSet()[i][j];
+				netValue = netValue + inputWeight * trainedNet.getTrainSet()[i][j];
 
 				System.out.print(trainedNet.getTrainSet()[i][j] + "\t");
 			}
 
-			double estimatedOutput = this.activationFnc(
-					trainedNet.getActivationFnc(), netValue);
+			double estimatedOutput = this.activationFnc(trainedNet.getActivationFnc(), netValue);
+
+			int colsOutput = trainedNet.getRealMatrixOutputSet()[0].length;
+
+			double realOutput = 0.0;
+			for (int k = 0; k < colsOutput; k++) {
+				realOutput = realOutput + trainedNet.getRealMatrixOutputSet()[i][k];
+			}
 
 			System.out.print(" NET OUTPUT: " + estimatedOutput + "\t");
-			System.out.print(" REAL OUTPUT: "
-					+ trainedNet.getRealOutputSet()[i] + "\t");
-			error = estimatedOutput - trainedNet.getRealOutputSet()[i];
+			System.out.print(" REAL OUTPUT: "+ realOutput + "\t");
+			error = estimatedOutput - realOutput;
 			System.out.print(" ERROR: " + error + "\n");
 
 		}

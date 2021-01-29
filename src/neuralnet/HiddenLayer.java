@@ -8,39 +8,47 @@ public class HiddenLayer extends Layer {
     public ArrayList<HiddenLayer> initLayer(HiddenLayer hiddenLayer, ArrayList<HiddenLayer> listOfHiddenLayer, 
                                             InputLayer inputLayer, OutputLayer outputLayer) {
 
+
 		ArrayList<Double> listOfWeightIn = new ArrayList<>();
 		ArrayList<Double> listOfWeightOut = new ArrayList<>();
 		ArrayList<Neuron> listOfNeurons = new ArrayList<>();
 
 		int numberOfHiddenLayers = listOfHiddenLayer.size();
 
-		for (int i = 0; i < numberOfHiddenLayers; i++) {
-			for (int j = 0; j < hiddenLayer.getNumberOfNeuronsInLayer(); j++) {
+		for (int hdn_i = 0; hdn_i < numberOfHiddenLayers; hdn_i++) {
+			for (int neuron_i = 0; neuron_i < hiddenLayer.getNumberOfNeuronsInLayer(); neuron_i++) {
 				Neuron neuron = new Neuron();
 
-				int limitIn;
-				int limitOut;
+				int limitIn = 0;
+				int limitOut = 0;
 
-				if (i == 0) { // first
+				if (hdn_i == 0) { // first
 					limitIn = inputLayer.getNumberOfNeuronsInLayer();
 					if (numberOfHiddenLayers > 1) {
-						limitOut = listOfHiddenLayer.get(i + 1).getNumberOfNeuronsInLayer();
-					} else {
-						limitOut = listOfHiddenLayer.get(i).getNumberOfNeuronsInLayer();
+						limitOut = listOfHiddenLayer.get(hdn_i + 1).getNumberOfNeuronsInLayer();
+					} else if(numberOfHiddenLayers == 1) {
+						limitOut = outputLayer.getNumberOfNeuronsInLayer();
 					}
-				} else if (i == numberOfHiddenLayers - 1) { // last
-					limitIn = listOfHiddenLayer.get(i - 1).getNumberOfNeuronsInLayer();
+				} else if (hdn_i == numberOfHiddenLayers - 1) { // last
+					limitIn = listOfHiddenLayer.get(hdn_i - 1).getNumberOfNeuronsInLayer();
 					limitOut = outputLayer.getNumberOfNeuronsInLayer();
 				} else { // middle
-					limitIn = listOfHiddenLayer.get(i - 1).getNumberOfNeuronsInLayer();
-					limitOut = listOfHiddenLayer.get(i + 1).getNumberOfNeuronsInLayer();
+					limitIn = listOfHiddenLayer.get(hdn_i - 1).getNumberOfNeuronsInLayer();
+					limitOut = listOfHiddenLayer.get(hdn_i + 1).getNumberOfNeuronsInLayer();
 				}
 
-				for (int k = 0; k < limitIn; k++) {
-					listOfWeightIn.add(neuron.initNeuron());
+				limitIn  = limitIn  - 1; // bias is not connected
+				limitOut = limitOut - 1; // bias is not connected
+
+				if (neuron_i >= 1) {
+					for (int k = 0; k <= limitIn; k++) {
+						listOfWeightIn.add(neuron.initNeuron());
+
+					}
 				}
-				for (int k = 0; k < limitOut; k++) {
+				for (int k = 0; k <= limitOut; k++) {
 					listOfWeightOut.add(neuron.initNeuron());
+
 				}
 
 				neuron.setListOfWeightIn(listOfWeightIn);
@@ -52,7 +60,7 @@ public class HiddenLayer extends Layer {
 
 			}
 
-			listOfHiddenLayer.get(i).setListOfNeurons(listOfNeurons);
+			listOfHiddenLayer.get(hdn_i).setListOfNeurons(listOfNeurons);
 
 			listOfNeurons = new ArrayList<>();
 
@@ -82,5 +90,10 @@ public class HiddenLayer extends Layer {
 				h++;
 			}
 		}
+	}
+
+	@Override
+	public void setNumberOfNeuronsInLayer(int numberOfNeuronsInLayer) {
+		this.numberOfNeuronsInLayer = numberOfNeuronsInLayer + 1; //B
 	}
 }
